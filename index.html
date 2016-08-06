@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="js/flexible.js"></script>
+    <title>图片裁剪</title>
+    <link rel="stylesheet" href="css/demo.css"/>
+</head>
+<body>
+    <div class="ui-loading-wrap" id="loading" style="display: none">
+        <i class="ui-loading"></i><span>加载中</span>
+    </div>
+    <div class="gold-container">
+        <h4 class="title">拖拽/缩放图片 将车牌完整放置框内</h4>
+        <div class="gold-inner" id="inner">
+            <div class="frame">
+                <img src="img/gold-rotate.png" class="rotate" id="btnRotate"/>
+            </div>
+            <div id="innerFrame" class="inner-frame"></div>
+            <img src="img/blank.gif" id="frameImg" class="frame-img"/>
+        </div>
+    </div>
+    <div class="btn-container">
+        <button type="button" class="ui-btn-lg ui-btn-orange">上传</button>
+        <input type="file" id="upload" accept="image/*" onfocus="this.blur()" class="file1"/>
+    </div>
+    <div class="btn-container">
+        <button type="button" class="ui-btn-lg ui-btn-orange" id="btnCrop">裁剪</button>
+    </div>
+    <img src="img/blank.gif" style="width: 100%;" id="frameImg2"/>
+
+    <script src="js/touch.js"></script>
+    <script src="js/hidpi-canvas.js"></script>
+    <script src="js/veCrop.js"></script>
+    <script>
+        var frameImg = document.getElementById('frameImg');
+        var frame = document.getElementById('inner');
+        var loading = document.getElementById('loading');
+        var cropFrame = document.getElementById('innerFrame');
+        var crop = new veCrop({
+            img:frameImg,
+            frame:frame,
+            frameBorderWidth:2,
+            cropFrame: cropFrame
+        });
+
+        document.getElementById('upload').addEventListener('change', function() {
+            var file = this.files[0];
+            if(!file) {//undefined
+                return;
+            }
+            loading.style.display = 'block';
+            var reader = new FileReader();
+            reader.readAsDataURL(file);// 将文件以Data URL形式进行读入页面
+            reader.onload = function() {
+                var base64 = this.result;
+
+                var img  = new Image();
+                img.onload = function() {
+                    var src = crop.filterImage(img, {width:this.width, height:this.height});//IOS中如果图片过大，将不能画在canvas中
+
+                    var realImg = new Image();
+                    realImg.onload = function() {
+                        loading.style.display = 'none';
+                        frameImg.setAttribute('src', src);//三次载入Base64数据
+                        crop.updateImg(frameImg, this.width, this.height);
+                    };
+                    realImg.src = src;
+                };
+                img.src = base64;
+            };
+        }, false);
+        document.getElementById('btnCrop').addEventListener('click', function() {
+            crop.updateImg(document.getElementById('frameImg'));//重新更新
+            crop.generate(function(base64) {
+                document.getElementById('frameImg2').src = base64;
+            });
+
+        }, false);
+//        window.onerror = function(msg, url, line, col, error) {
+//            var newMsg = msg;
+//            //alert(error)
+//            if (error && error.stack) {
+//                var stack = error.stack.replace(/\n/gi, "").split(/\bat\b/).slice(0, 9).join("@").replace(/\?[^:]+/gi, "");
+//                var msg = error.toString();
+//                if (stack.indexOf(msg) < 0) {
+//                    stack = msg + "@" + stack;
+//                }
+//                newMsg = stack;
+//            }
+//            var obj = {msg:newMsg, target:url, rowNum:line, colNum:col};
+//            $('body')[0].innerHTML += line + ':'+''+'：<p>'+obj.msg+'</p>';
+//            //alert(obj.msg)
+//        };
+    </script>
+</body>
+</html>

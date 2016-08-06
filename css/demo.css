@@ -1,0 +1,243 @@
+@charset "UTF-8";
+
+/**
+* Loading
+*/
+
+.ui-loading-wrap {
+  text-align: center;
+}
+
+.ui-loading-wrap p {
+  margin: 0 0.133333rem 0 0;
+}
+
+.ui-loading {
+  width: 0.533333rem;
+  height: 0.533333rem;
+  display: inline-block;
+  border: 0.04rem solid #c7c7c7;
+  border-top-color: transparent;
+  border-radius: 100%;
+  -webkit-animation: border-rotate 1s linear infinite;
+          animation: border-rotate 1s linear infinite;
+}
+
+@-webkit-keyframes border-rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+
+  50% {
+    -webkit-transform: rotate(180deg);
+            transform: rotate(180deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+@keyframes border-rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+
+  50% {
+    -webkit-transform: rotate(180deg);
+            transform: rotate(180deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+.ui-loading-wrap {
+  top: 45%;
+  left: 50%;
+  position: absolute;
+  z-index: 10;
+  width: 4rem;
+  margin-left: -2rem;
+  margin-top: -0.666667rem;
+  padding: 0.666667rem 0;
+  background: rgba(0, 0, 0, 0.8);
+  color: #FFF;
+  border-radius: 0.133333rem;
+}
+
+[data-dpr="1"] .ui-loading-wrap {
+  font-size: 15px;
+}
+
+[data-dpr="2"] .ui-loading-wrap {
+  font-size: 30px;
+}
+
+[data-dpr="3"] .ui-loading-wrap {
+  font-size: 45px;
+}
+
+.ui-loading-wrap .ui-loading {
+  margin-right: 0.133333rem;
+  vertical-align: middle;
+}
+
+.gold-container {
+  width: 92%;
+  margin: 0.266667rem auto;
+  background: rgba(9, 11, 61, 0.8);
+  text-align: center;
+  border-radius: 0.4rem;
+  padding-bottom: 0.2rem;
+}
+
+.gold-container .title {
+  padding: 0.533333rem 0;
+  color: #FFF;
+  margin: 0;
+}
+
+[data-dpr="1"] .gold-container .title {
+  font-size: 17px;
+}
+
+[data-dpr="2"] .gold-container .title {
+  font-size: 34px;
+}
+
+[data-dpr="3"] .gold-container .title {
+  font-size: 51px;
+}
+
+.gold-container .gold-inner {
+  border-radius: 0.266667rem;
+  width: 95%;
+  margin: 0 auto;
+  height: 6.4rem;
+  border: 2px solid #364163;
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.gold-container .gold-inner .frame {
+  position: absolute;
+  left: 0;
+  /*no*/
+  top: -2px;
+  right: 0;
+  /*no*/
+  bottom: 0;
+  z-index: 3;
+  box-sizing: border-box;
+  border-radius: 0.2rem;
+  background: url("../img/gold-frame.png") no-repeat center center;
+  pointer-events: none;
+  background-size: 100% 100%;
+  text-align: right;
+}
+
+.gold-container .gold-inner .frame .rotate {
+  pointer-events: auto;
+  margin: 0.266667rem 0.266667rem 0 0;
+  width: 1rem;
+  height: 1rem;
+}
+
+.gold-container .gold-inner .frame-img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  border-radius: 0.2rem;
+  z-index: 1;
+  -webkit-transition: -webkit-transform .1s ease;
+  transition: -webkit-transform .1s ease;
+  transition: transform .1s ease;
+  transition: transform .1s ease, -webkit-transform .1s ease;
+}
+
+.gold-container .gold-inner .inner-frame {
+  position: absolute;
+  width: 6.266667rem;
+  height: 2.4rem;
+  left: 50%;
+  margin-left: -3.133333rem;
+  top: 50%;
+  margin-top: -1.2rem;
+  pointer-events: none;
+}
+
+/**
+* 按钮
+*/
+
+.btn-container {
+  width: 6.933333rem;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+}
+
+.btn-container .file1 {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+  height: 1.2rem;
+  opacity: 0;
+}
+
+.ui-btn-orange {
+  border: 0;
+  height: 1.2rem;
+  border-radius: 0.266667rem;
+  margin-bottom: 0.666667rem;
+  width: 100%;
+  color: #FFF;
+  background: transparent;
+  outline: none;
+}
+
+[data-dpr="1"] .ui-btn-orange {
+  font-size: 20px;
+}
+
+[data-dpr="2"] .ui-btn-orange {
+  font-size: 40px;
+}
+
+[data-dpr="3"] .ui-btn-orange {
+  font-size: 60px;
+}
+
+.ui-btn-orange::after {
+  content: "";
+  position: absolute;
+  background: #f28900;
+  width: 7.066667rem;
+  height: 1.333333rem;
+  top: 0;
+  left: -0.066667rem;
+  z-index: -1;
+  border-radius: 0.333333rem 0.333333rem 0.266667rem  0.266667rem;
+  box-shadow: 0 0.133333rem 0 rgba(0, 0, 0, 0.35);
+}
+
+.ui-btn-orange[disabled] {
+  background: #999;
+}
+
+.ui-btn-orange[disabled]::after {
+  background: #999;
+}
+
+.ui-btn-lg::before {
+  border: 0;
+}
