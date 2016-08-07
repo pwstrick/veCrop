@@ -37,13 +37,18 @@
         var frame = document.getElementById('inner');
         var loading = document.getElementById('loading');
         var cropFrame = document.getElementById('innerFrame');
+        /**
+         * 初始化裁剪对象
+         */
         var crop = new veCrop({
             img:frameImg,
             frame:frame,
             frameBorderWidth:2,
             cropFrame: cropFrame
         });
-
+        /**
+         * 上传
+         */
         document.getElementById('upload').addEventListener('change', function() {
             var file = this.files[0];
             if(!file) {//undefined
@@ -58,26 +63,39 @@
                 var img  = new Image();
                 img.onload = function() {
                     var src = crop.filterImage(img, {width:this.width, height:this.height});//IOS中如果图片过大，将不能画在canvas中
-
+                    crop.init();
                     var realImg = new Image();
                     realImg.onload = function() {
                         loading.style.display = 'none';
                         frameImg.setAttribute('src', src);//三次载入Base64数据
-                        crop.updateImg(frameImg, this.width, this.height);
+                        crop.setSize(this.width, this.height);//更新图片尺寸
                     };
                     realImg.src = src;
                 };
                 img.src = base64;
             };
         }, false);
+        /**
+         * 裁剪
+         */
         document.getElementById('btnCrop').addEventListener('click', function() {
-            crop.updateImg(document.getElementById('frameImg'));//重新更新
             crop.generate(function(base64) {
                 document.getElementById('frameImg2').src = base64;
             });
+        }, false);
+        /**
+         * 90°旋转
+         */
+
+        document.getElementById('btnRotate').addEventListener('touchstart', function() {
+            var param = crop.getParam();
+            param.deg += 90;
+            crop.formatTransform(param.offsetX, param.offsetY, param.scale, param.deg);
+
 
         }, false);
-//        window.onerror = function(msg, url, line, col, error) {
+
+        //        window.onerror = function(msg, url, line, col, error) {
 //            var newMsg = msg;
 //            //alert(error)
 //            if (error && error.stack) {

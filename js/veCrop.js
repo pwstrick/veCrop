@@ -38,6 +38,7 @@
 
     /**
      * devicePixelRatio设备像素比 webkitBackingStorePixelRatio Canvas缓冲区的像素比
+     * 作用就是让Canvas中每个像素和手机屏幕的物理像素1：1对应，在Canvas中画线或写字可以更清晰
      */
     function pixelRatio(ctx) {
         var backingstore = ctx.webkitBackingStorePixelRatio|| 1;
@@ -145,15 +146,15 @@
     }
 
     /**
-     * 更新图片信息
-     * @param image
+     * 更新图片尺寸
      * @param width
      * @param height
      */
-    veCropProtytype.updateImg = function(image, width, height) {
-        width && image.setAttribute('data-width', width);//实际宽度
-        height && image.setAttribute('data-height', height);//实际高度
-        this.opts.img = image;
+    veCropProtytype.setSize = function(width, height) {
+        //var id = this.opts.img.getAttribute('id');
+        //this.opts.img = document.getElementById(id);
+        width && this.opts.img.setAttribute('data-width', width);//实际宽度
+        height && this.opts.img.setAttribute('data-height', height);//实际高度
     };
 
     /**
@@ -170,32 +171,43 @@
     };
 
     /**
+     * 设置param参数
+     */
+    veCropProtytype.getParam = function() {
+        return this.param;
+    };
+
+    /**
      * 裁剪生成
      */
     veCropProtytype.generate = function(fn) {
+        //this.updateImage();
         var image = this.opts.img, _this = this;
         var cropFrame = this.opts.cropFrame;
         var frameOffset = cropFrame.getBoundingClientRect();
-        var src = this.filterImage(image);//操作后的图片
+        var src = this.filterImage(image);//旋转平移缩放后的图片
 
         var img = new Image();
+        var originWidth = image.getAttribute('data-width'),//图片原始的宽高
+            originHeight = image.getAttribute('data-height');
         img.onload = function() {
-            image.setAttribute('data-width', this.width);
-            image.setAttribute('data-height', this.height);
+            _this.setSize(this.width, this.height);//将旋转后的图片尺寸临时存放在全局img中
 
             var canvas = document.createElement('canvas');
-            canvas.width = frameOffset.width;//CSS中定义了画布是650
+            canvas.width = frameOffset.width;//裁剪框的宽高
             canvas.height = frameOffset.height;
             var ctx = canvas.getContext('2d');
 
             ctx.fillStyle = '#FFF';//绘制背景色
             ctx.fillRect(0,0,canvas.width,canvas.height);
 
-            var params = _this.intersect(cropFrame);
-            drawImage(ctx, this, params);
+            var params = _this.intersect(cropFrame);//计算裁剪框与操作后的图片位置关系
+
+            drawImage(ctx, this, params);//在旋转放大平移后的图片中选中位置裁剪
 
             var base64 = canvas.toDataURL('image/jpeg');
 
+            _this.setSize(originWidth, originHeight);
             fn && fn.call(this, base64);
         };
         img.src = src;
@@ -215,6 +227,7 @@
             deg = coor['deg'] || this.param.deg;//图片真实高度
         var pr = pixelRatio(canvas.getContext('2d'));
         var caculate;
+        //将负值转换成正值
         if(deg < 0) {
             deg = deg + 360;
         }
@@ -238,7 +251,7 @@
         }else {
             ctx.drawImage(image, 0, 0, width, height);
         }
-        return canvas.toDataURL('image/jpeg', 0.5);
+        return canvas.toDataURL('image/jpeg', 0.5);//压缩质量为.5
     };
 
     /**
@@ -313,9 +326,9 @@
             frameBorderWidth2X = frameBorderWidth * 2;
 
         imgOffset = img.getBoundingClientRect();//图片的偏移对象
-        frmOffset = cropFrame.getBoundingClientRect();//画框的偏移对象
-        left = imgOffset.left - frmOffset.left - frameBorderWidth;//图片到边框左边的距离 去除2px的边框
-        right = left + imgOffset.width;//图片宽度需要减去边框的宽度 就是650
+        frmOffset = cropFrame.getBoundingClientRect();//裁剪框的偏移对象
+        left = imgOffset.left - frmOffset.left - frameBorderWidth;//图片到边框左边的距离 去除边框宽度
+        right = left + imgOffset.width;//图片宽度需要减去边框的宽度
         top = imgOffset.top - frmOffset.top - frameBorderWidth;//图片到边框上边的距离
         bottom = top + imgOffset.height;
 
